@@ -1,0 +1,25 @@
+from time import sleep
+from threading import Thread
+
+
+def some_task():
+    for b in range(0, 100):
+        print (" daemon hello!!!!! ======> " + str(b))
+        sleep(0.2)
+        pass
+
+
+t = Thread(target=some_task)  # run the some_task function in another
+# thread
+t.daemon = True  # Python will exit when the main thread
+# exits, even if this thread is still
+# running
+
+snooziness = int(raw_input('Enter the amount of seconds you want to run this: '))
+t.start()
+
+for a in range(0, 1000):
+    print 'parent hello!!!!!!!!!====> ' + str(a)
+    sleep(0.1)
+
+sleep(snooziness)
