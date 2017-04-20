@@ -151,7 +151,9 @@ class star_client:
         ## initialize list of tags and round count
         self.rounds = rounds
         self.tags = {}
-
+        sequence_number = 0
+        last_sequence_number = 0
+        lost = 0
         with open('start_stream.txt', 'a') as f:
             print 'process started...'
             for line in iterable:
@@ -173,9 +175,20 @@ class star_client:
                     # if it a json payload
                     # print 'It is an instance of an array: ' +  str(isinstance(decoded_line,list))
                     if decoded_line.startswith("data: "):
+                        # print "====>>>   decoded_line[6:]" + str(decoded_line[6:])
                         x = json.loads(decoded_line[6:])  # decodes json
                         if not isinstance(x,list):
+                            last_sequence_number = sequence_number;
+                            if x.has_key("seqNum"):
+                                sequence_number = x['seqNum']
+                            else:
+                                sequence_number = "no attribute"
                             self.decode_sse_item(x)
+                            if last_sequence_number == 0 & ~(sequence_number == 0):
+                                print "=====>>First sequence number : " + str(sequence_number)
+                            elif sequence_number > last_sequence_number + 1:
+                                lost += sequence_number - last_sequence_number -1;
+                                print "lost sequence: " + str(lost)
                         else:
                             for xs in x:
                                 self.decode_subs_item(xs)
@@ -264,6 +277,7 @@ class star_client:
                 decoded_line = line.decode('utf-8')
                 # if it a json payload
                 if decoded_line.startswith("data: "):
+                    print "====>>>   decoded_line[6:]" + str(decoded_line[6:])
                     x = json.loads(decoded_line[6:])  # decodes json
                     # if it is a new round counter increments
                     if x['type'] == "RoundStart":

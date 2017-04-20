@@ -24,11 +24,11 @@ def read_developer_message():
     return dev_msg
 def client_listening():
     # client.listen_during(-1, end_point='/rfid/events/deepInv?override')  # same endpoint
-    client.listen_during(-1, end_point='/rfid/events?override')  # same endpoint
+    client.listen_during(-1, end_point='/rfid/events/allAttribs?override')  # same endpoint
     print ' !!!!!!!!!!!!!!!   --===============>>  thread 1 stopped'
     pass
 
-client = starflex.star_client('10.100.1.71')
+client = starflex.star_client('10.100.0.92', '10047')
 # Start
 client.post_msg(end_point='/apps/inventory') # inventory started
 # Listening for 10 seconds

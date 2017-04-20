@@ -17,7 +17,7 @@ def listen(iterable, time_window):
 
 # Start killing thread
 time_window = 10
-client = starflex.star_client('10.100.1.71')
+client = starflex.star_client('10.100.0.92', '10047')
 iterable = client.wait_first_round(time_window=0, end_point='/rfid/events')
 try:
     thread.start_new_thread(kill_after, (time_window - 2,))
